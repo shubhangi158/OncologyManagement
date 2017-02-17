@@ -56,7 +56,7 @@ func (t *SimpleChaincode)create_patient(stub shim.ChaincodeStubInterface, patien
 	
 	var p Patient
 	
-	patient_json := `{"patientId": "` + patientId + `", "gender": "` + gender + `", "age": ` + strconv.Itoa(age) + `, "illness": "` + illness + `"}`						//Build the Patient JSON object
+	patient_json := `{"patientId": "` + patientId + `", "age": ` + strconv.Itoa(age) + `, "gender": "` + gender +  `", "illness": "` + illness + `"}`						//Build the Patient JSON object
 	
 	if patientId == "" {
 		fmt.Printf("CREATE_PATIENT: Invalid Patient ID provided.")

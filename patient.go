@@ -90,13 +90,13 @@ func (t *SimpleChaincode)create_patient(stub shim.ChaincodeStubInterface, patien
 //==============================================================================================================================
 func (t *SimpleChaincode) save_changes(stub shim.ChaincodeStubInterface, p Patient) (bool, error){
 
-	bytes, err := json.Marshal(p)
+	patientJson, err := json.Marshal(p)
 	if err != nil{
 		fmt.Printf("SAVE_CHANGES: Error converting Patient record: %s", err)
 		return false, errors.New("Error converting Patient record")
 	}
 	
-	err = stub.PutState(p.PatientId, bytes)
+	err = stub.PutState(p.PatientId, []byte(patientJson))
 	if err != nil{
 		fmt.Printf("SAVE_CHANGES: Error storing Patient record: %s", err)
 		return false, errors.New("Error storing Patient record")
@@ -132,7 +132,7 @@ func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function stri
 	
 	if function == "create_patient"{
 		return t.create_patient(stub, args[0], age, args[2], args[3])
-	}
+	}                                                                                                                                            
 	
 	return nil, errors.New("Function " + function + "doesn't exist")
 }

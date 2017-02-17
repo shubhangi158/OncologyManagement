@@ -56,23 +56,23 @@ func (t *SimpleChaincode)create_patient(stub shim.ChaincodeStubInterface, patien
 	
 	var p Patient
 	
-	patient_json := `{"patientId": "` + patientId + `", "age": ` + strconv.Itoa(age) + `, "gender": "` + gender +  `", "illness": "` + illness + `"}`						//Build the Patient JSON object
+	patient_json := []byte(`{"patientId": "` + patientId + `", "age": ` + strconv.Itoa(age) + `, "gender": "` + gender +  `", "illness": "` + illness + `"}`)						//Build the Patient JSON object
 	
 	if patientId == "" {
 		fmt.Printf("CREATE_PATIENT: Invalid Patient ID provided.")
 		return nil,errors.New("Invalid Patient ID provided.")
 	}
 	
-	err := json.Unmarshal([]byte(patient_json), &p)													//Converts the JSON defined above into a Patient object 
+	err := json.Unmarshal(patient_json, &p)													//Converts the JSON defined above into a Patient object 
 	if err != nil{
 		fmt.Printf("Invalid JSON Object")
 		return nil,errors.New("Invalid JSON Object")
 	}
 
-	record, err := stub.GetState(p.PatientId)														
+	/*record, err := stub.GetState(p.PatientId)														
 	if record != nil{																				//If not an error then a record exists, so cant create a new  with this V5cID 
 		return nil, errors.New("Patient already exists.")
-	}
+	}*/
 	
 	_, err = t.save_changes(stub, p)
 	if err != nil { 
@@ -96,7 +96,7 @@ func (t *SimpleChaincode) save_changes(stub shim.ChaincodeStubInterface, p Patie
 		return false, errors.New("Error converting Patient record")
 	}
 	
-	err = stub.PutState(p.PatientId, []byte(patientJson))
+	err = stub.PutState(p.PatientId, patientJson)
 	if err != nil{
 		fmt.Printf("SAVE_CHANGES: Error storing Patient record: %s", err)
 		return false, errors.New("Error storing Patient record")
